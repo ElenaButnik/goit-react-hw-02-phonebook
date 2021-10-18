@@ -1,5 +1,7 @@
 import { Component } from "react";
 import { v4 as uuidv4 } from "uuid";
+import s from "../Forms/Form.module.css";
+import PropTypes from "prop-types";
 
 export class Form extends Component {
   state = {
@@ -8,21 +10,21 @@ export class Form extends Component {
   };
 
   handleChange = (e) => {
+    const { name, value } = e.target;
     // console.log(e.target.name,e.target.value);
     this.setState({
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
   };
 
   handleSubmit = (e) => {
     e.preventDefault();
+    const { name, number } = this.state;
 
     const obj = {
-      name: this.state.name,
-      number: this.state.number,
+      name,
+      number,
     };
-
-    //this.setState({ contact });
 
     this.props.addNewContact(obj);
     this.reset();
@@ -36,37 +38,54 @@ export class Form extends Component {
   prodIdNumber = uuidv4();
 
   render() {
+    const { handleSubmit, prodIdName, handleChange, prodIdNumber } = this;
+    const { name, number } = this.state;
     return (
       <div>
-        <form onSubmit={this.handleSubmit}>
-          <label htmlFor={this.prodIdName}>
+        <form className={s.form} onSubmit={handleSubmit}>
+          <label className={s.label} htmlFor={prodIdName}>
+            {" "}
             Name
-            <input
-              id={this.prodIdName}
-              type="text"
-              name="name"
-              pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-              title="Имя может состоять только из букв, апострофа, тире и пробелов. Например Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan и т. п."
-              required
-              onChange={this.handleChange}
-            />
           </label>
+          <input
+            className={s.input}
+            id={prodIdName}
+            type="text"
+            name="name"
+            value={name}
+            pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+            title="Имя может состоять только из букв, апострофа, тире и пробелов. Например Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan и т. п."
+            required
+            onChange={handleChange}
+          />
 
-          <label htmlFor={this.prodIdNumber}>
+          <label className={s.label} htmlFor={prodIdNumber}>
             Number
-            <input
-              id={this.prodIdNumber}
-              type="tel"
-              name="number"
-              pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-              title="Номер телефона должен состоять цифр и может содержать пробелы, тире, круглые скобки и может начинаться с +"
-              required
-              onChange={this.handleChange}
-            />
           </label>
-          <button type="submit">Add contact</button>
+          <input
+            className={s.input}
+            id={prodIdNumber}
+            type="tel"
+            name="number"
+            value={number}
+            pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+            title="Номер телефона должен состоять цифр и может содержать пробелы, тире, круглые скобки и может начинаться с +"
+            required
+            onChange={handleChange}
+          />
+
+          <button className={s.button} type="submit">
+            Add contact
+          </button>
         </form>
       </div>
     );
   }
 }
+
+Form.propTypes = {
+  handleSubmit: PropTypes.func,
+  handleChange: PropTypes.func,
+  name: PropTypes.string,
+  number: PropTypes.number,
+};
